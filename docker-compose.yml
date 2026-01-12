@@ -1,0 +1,56 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: fke_postgres
+    environment:
+      POSTGRES_USER: fke_user
+      POSTGRES_PASSWORD: fke_password
+      POSTGRES_DB: fke_database
+    ports:
+      - "5431:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U fke_user -d fke_database"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - fke_network
+
+  migrations:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fke_migrations
+    env_file:
+      - .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: ["uv", "run", "alembic", "upgrade", "head"]
+    networks:
+      - fke_network
+
+  pipeline:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fke_pipeline
+    env_file:
+      - .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migrations:
+        condition: service_completed_successfully
+    networks:
+      - fke_network
+
+networks:
+  fke_network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local
