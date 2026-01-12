@@ -28,6 +28,9 @@ FakeStore API → Extração → DataFrame Spark → Filtros → Sumarização �
 ### Executar Pipeline Completo
 
 ```bash
+# Copiar arquivo de variáveis de ambiente
+cp env.example .env
+
 # Subir PostgreSQL + Executar migrations + Pipeline
 docker compose up --build
 ```
