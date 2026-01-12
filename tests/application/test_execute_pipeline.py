@@ -1,7 +1,30 @@
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
+
+import pytest
 
 from src.application.execute_pipeline import ExecutePipelineUseCase
 from src.domain.exceptions import APIException, TransactionException
+
+
+@pytest.fixture(autouse=True)
+def mock_settings():
+    """Mock das configurações para todos os testes."""
+    mock_pipeline_settings = MagicMock()
+    mock_pipeline_settings.batch_size = 5
+    mock_pipeline_settings.min_price = 100.0
+    mock_pipeline_settings.min_rating = 3.5
+
+    mock_settings_obj = MagicMock()
+    mock_settings_obj.pipeline = mock_pipeline_settings
+
+    with patch(
+        "src.application.load_data.get_settings", return_value=mock_settings_obj
+    ):
+        with patch(
+            "src.application.transform_products.get_settings",
+            return_value=mock_settings_obj,
+        ):
+            yield mock_settings_obj
 
 
 class TestExecutePipelineUseCase:
