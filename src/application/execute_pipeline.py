@@ -52,13 +52,13 @@ class ExecutePipelineUseCase:
         """
 
         try:
-            logger.info("\n[ETAPA 1/3] EXTRAÇÃO DE DADOS")
+            logger.info("[ETAPA 1/3] EXTRAÇÃO DE DADOS")
             products = self._extract_use_case.execute()
 
-            logger.info("\n[ETAPA 2/3] TRANSFORMAÇÃO DE DADOS")
+            logger.info("[ETAPA 2/3] TRANSFORMAÇÃO DE DADOS")
             filtered_products, summaries = self._transform_use_case.execute(products)
 
-            logger.info("\n[ETAPA 3/3] CARREGAMENTO DE DADOS")
+            logger.info("[ETAPA 3/3] CARREGAMENTO DE DADOS")
             batches_count = self._load_use_case.execute(summaries)
 
             result = PipelineResult(

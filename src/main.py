@@ -3,7 +3,6 @@ import sys
 from loguru import logger
 
 from src.application.execute_pipeline import ExecutePipelineUseCase
-from src.config.settings import get_settings
 from src.infrastructure.api.api_client import FakeStoreAPIClient
 from src.infrastructure.database.repository import PostgreSQLRepository
 from src.infrastructure.pyspark.spark_transformer import SparkTransformer
